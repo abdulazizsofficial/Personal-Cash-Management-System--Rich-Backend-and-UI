@@ -1,0 +1,110 @@
+<style>
+  .topnav {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(8, 17, 31, 0.82);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+  }
+
+  .nav-inner {
+    width: min(1180px, calc(100% - 32px));
+    margin: 0 auto;
+    min-height: 74px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .brand-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 1.05rem;
+    color: #f8fafc;
+  }
+
+  .brand-mark {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #38bdf8, #8b5cf6);
+    box-shadow: 0 10px 28px rgba(56, 189, 248, 0.2);
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .nav-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 9px 13px;
+    border-radius: 8px;
+    color: #cbd5e1;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: background 0.18s ease, color 0.18s ease;
+  }
+
+  .nav-links a:hover {
+    background: rgba(148, 163, 184, 0.12);
+    color: #fff;
+  }
+
+  .nav-links a.nav-primary {
+    background: rgba(56, 189, 248, 0.14);
+    color: #e0f2fe;
+    border: 1px solid rgba(56, 189, 248, 0.24);
+  }
+
+  .nav-links a.nav-logout {
+    color: #fecaca;
+  }
+
+  @media (max-width: 760px) {
+    .nav-inner {
+      width: min(100% - 24px, 1180px);
+      align-items: flex-start;
+      flex-direction: column;
+      padding: 14px 0;
+    }
+
+    .nav-links {
+      width: 100%;
+    }
+
+    .nav-links a {
+      flex: 1 1 130px;
+      justify-content: center;
+    }
+  }
+</style>
+
+<nav class="topnav">
+  <div class="nav-inner">
+    <a class="brand-link" href="{% url 'dashboardpage' %}">
+      <span class="brand-mark"><i class="fa-solid fa-chart-line"></i></span>
+      <span>ManageCash</span>
+    </a>
+    <div class="nav-links">
+      <a class="nav-primary" href="{% url 'dashboardpage' %}"><i class="fa-solid fa-table-columns"></i> Dashboard</a>
+      <a href="{% url 'transactionpage' %}"><i class="fa-solid fa-sack-dollar"></i> Cash & Expense</a>
+      <a href="{% url 'profilepage' %}"><i class="fa-solid fa-user"></i> Profile</a>
+      <a class="nav-logout" href="{% url 'logoutpage' %}"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+    </div>
+  </div>
+</nav>

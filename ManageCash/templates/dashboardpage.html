@@ -1,0 +1,281 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<style>
+  .dashboard-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.6fr);
+    gap: 18px;
+    align-items: stretch;
+    margin: 28px 0 22px;
+  }
+
+  .hero-copy {
+    padding: 30px;
+  }
+
+  .hero-copy h1 {
+    margin: 0;
+    font-size: clamp(2rem, 4vw, 3.6rem);
+    letter-spacing: 0;
+    line-height: 1.04;
+  }
+
+  .hero-copy p {
+    max-width: 680px;
+    margin: 14px 0 0;
+    color: #cbd5e1;
+    line-height: 1.7;
+  }
+
+  .status-box {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .status-label {
+    color: #94a3b8;
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .status-value {
+    margin-top: 8px;
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #bae6fd;
+  }
+
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 22px;
+  }
+
+  .kpi-card {
+    padding: 22px;
+  }
+
+  .kpi-icon {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    margin-bottom: 18px;
+    background: rgba(56, 189, 248, 0.14);
+    color: #7dd3fc;
+  }
+
+  .kpi-card.cash .kpi-icon {
+    background: rgba(34, 197, 94, 0.14);
+    color: #86efac;
+  }
+
+  .kpi-card.expense .kpi-icon {
+    background: rgba(249, 115, 22, 0.14);
+    color: #fdba74;
+  }
+
+  .kpi-label {
+    color: #94a3b8;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .kpi-value {
+    margin-top: 8px;
+    color: #fff;
+    font-size: clamp(1.9rem, 4vw, 2.8rem);
+    font-weight: 800;
+  }
+
+  .records-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .history-title {
+    margin: 8px 0 14px;
+  }
+
+  .history-title h2 {
+    margin: 0;
+    font-size: 1.45rem;
+  }
+
+  .history-title p {
+    margin: 7px 0 0;
+    color: #94a3b8;
+  }
+
+  .records-panel {
+    overflow: hidden;
+  }
+
+  .records-head {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .records-head h2 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.15rem;
+  }
+
+  .compact-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .compact-list li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .record-title {
+    margin: 0;
+    font-weight: 800;
+    color: #f8fafc;
+  }
+
+  .record-meta {
+    margin: 5px 0 0;
+    color: #94a3b8;
+    font-size: 0.86rem;
+  }
+
+  .show-more {
+    display: flex;
+    justify-content: flex-end;
+    padding: 16px 20px;
+  }
+
+  @media (max-width: 920px) {
+    .dashboard-hero,
+    .records-grid,
+    .kpi-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<section class="dashboard-hero">
+  <div class="panel hero-copy">
+    <h1>CashFlow Manager</h1>
+    <p>Track income, expenses, and current balance from one focused dashboard. The result cards stay at the top, and the latest cash and expense history appears below for quick review.</p>
+  </div>
+  <aside class="panel status-box">
+    <div>
+      <div class="status-label">Financial Status</div>
+      <div class="status-value">{{ status }}</div>
+    </div>
+    <div>
+      <div class="status-label">Today</div>
+      <div class="status-value">{% now "M d, Y" %}</div>
+    </div>
+  </aside>
+</section>
+
+<section class="kpi-grid">
+  <div class="panel kpi-card cash">
+    <div class="kpi-icon"><i class="fa-solid fa-sack-dollar"></i></div>
+    <div class="kpi-label">Total Cash</div>
+    <div class="kpi-value">${{ total_cash|floatformat:2 }}</div>
+  </div>
+  <div class="panel kpi-card expense">
+    <div class="kpi-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+    <div class="kpi-label">Total Expense</div>
+    <div class="kpi-value">${{ total_expense|floatformat:2 }}</div>
+  </div>
+  <div class="panel kpi-card">
+    <div class="kpi-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+    <div class="kpi-label">Current Balance</div>
+    <div class="kpi-value">${{ balance|floatformat:2 }}</div>
+  </div>
+</section>
+
+<div class="history-title">
+  <h2>Recent History</h2>
+  <p>Latest cash and expense records are shown below the results. Use the Cash Page or Expense Page in the nav for full month-wise records.</p>
+</div>
+
+<section class="records-grid">
+  <div class="panel records-panel">
+    <div class="records-head">
+      <h2><i class="fa-solid fa-arrow-trend-up" style="color: #86efac;"></i> Latest Cash</h2>
+    </div>
+    {% with cash_records=request.user.users_cash.all %}
+      {% if cash_records %}
+        <ul class="compact-list">
+          {% for item in cash_records|dictsortreversed:"datetime"|slice:":5" %}
+            <li>
+              <div>
+                <p class="record-title">{{ item.source|default:"Cash source" }}</p>
+                <p class="record-meta">{{ item.datetime|date:"M d, Y h:i A" }}{% if item.description %} | {{ item.description|truncatechars:54 }}{% endif %}</p>
+              </div>
+              <strong class="amount-cash">+${{ item.amount|floatformat:2 }}</strong>
+            </li>
+          {% endfor %}
+        </ul>
+        {% if cash_records.count > 5 %}
+          <div class="show-more">
+            <a href="{% url 'transactionpage' %}#cash-records" class="btn btn-secondary">Show more</a>
+          </div>
+        {% endif %}
+      {% else %}
+        <div class="empty-state">No cash records yet. Add cash from the Cash Page.</div>
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <div class="panel records-panel">
+    <div class="records-head">
+      <h2><i class="fa-solid fa-arrow-trend-down" style="color: #fdba74;"></i> Latest Expenses</h2>
+    </div>
+    {% with expense_records=request.user.users_expense.all %}
+      {% if expense_records %}
+        <ul class="compact-list">
+          {% for item in expense_records|dictsortreversed:"datetime"|slice:":5" %}
+            <li>
+              <div>
+                <p class="record-title">{{ item.description|default:"Expense" }}</p>
+                <p class="record-meta">{{ item.datetime|date:"M d, Y h:i A" }}</p>
+              </div>
+              <strong class="amount-expense">-${{ item.amount|floatformat:2 }}</strong>
+            </li>
+          {% endfor %}
+        </ul>
+        {% if expense_records.count > 5 %}
+          <div class="show-more">
+            <a href="{% url 'transactionpage' %}#expense-records" class="btn btn-secondary">Show more</a>
+          </div>
+        {% endif %}
+      {% else %}
+        <div class="empty-state">No expense records yet. Add expenses from the Expense Page.</div>
+      {% endif %}
+    {% endwith %}
+  </div>
+</section>
+{% endblock body %}

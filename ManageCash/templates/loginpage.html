@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | ManageCash</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      font-family: "Inter", Arial, sans-serif;
+      color: #f8fafc;
+      background:
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), transparent 32rem),
+        linear-gradient(135deg, #08111f 0%, #111827 52%, #162033 100%);
+    }
+
+    .auth-card {
+      width: min(100%, 440px);
+      padding: 30px;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 8px;
+      background: rgba(17, 24, 39, 0.88);
+      box-shadow: 0 24px 70px rgba(2, 6, 23, 0.42);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #38bdf8, #8b5cf6);
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2rem;
+      letter-spacing: 0;
+    }
+
+    p {
+      margin: 10px 0 24px;
+      color: #94a3b8;
+      line-height: 1.6;
+    }
+
+    form p {
+      margin: 0 0 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #cbd5e1;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    input {
+      width: 100%;
+      min-height: 44px;
+      padding: 12px 13px;
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      border-radius: 8px;
+      background: rgba(15, 23, 42, 0.72);
+      color: #f8fafc;
+      font: inherit;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: rgba(56, 189, 248, 0.72);
+      box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.12);
+    }
+
+    input[type="submit"] {
+      border: 0;
+      margin-top: 4px;
+      background: linear-gradient(135deg, #38bdf8, #8b5cf6);
+      color: #fff;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .auth-link {
+      margin: 20px 0 0;
+      color: #94a3b8;
+      text-align: center;
+    }
+
+    .auth-link a {
+      color: #bae6fd;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .errorlist {
+      padding: 12px 14px;
+      border-radius: 8px;
+      background: rgba(239, 68, 68, 0.12);
+      color: #fecaca;
+      list-style-position: inside;
+    }
+  </style>
+</head>
+<body>
+  <main class="auth-card">
+    <div class="brand">MC</div>
+    <h1>Welcome back</h1>
+    <p>Sign in to manage cash, expenses, and your current balance from one dashboard.</p>
+
+    <form method="POST">
+      {% csrf_token %}
+      {{ logdata.as_p }}
+      <input type="submit" value="Login">
+    </form>
+
+    <p class="auth-link">Do not have an account? <a href="{% url 'registerpage' %}">Create one</a></p>
+  </main>
+</body>
+</html>

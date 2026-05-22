@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<section class="form-page">
+  <div class="page-heading">
+    <div>
+      <h1>{{ title }}</h1>
+      <p>Keep the record clean and consistent so the dashboard totals stay portfolio-ready.</p>
+    </div>
+  </div>
+
+  <div class="panel form-panel">
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ data.as_p }}
+      <input type="submit" value="{{ button }}">
+    </form>
+  </div>
+</section>
+{% endblock body %}

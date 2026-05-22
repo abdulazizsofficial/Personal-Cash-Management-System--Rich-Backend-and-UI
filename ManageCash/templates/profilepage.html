@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<style>
+  .profile-layout {
+    display: grid;
+    grid-template-columns: minmax(280px, 0.8fr) minmax(0, 1.2fr);
+    gap: 20px;
+    align-items: start;
+    margin-top: 24px;
+  }
+
+  .profile-card {
+    padding: 26px;
+    text-align: center;
+  }
+
+  .profile-avatar {
+    width: 132px;
+    height: 132px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    padding: 4px;
+    background: linear-gradient(135deg, #38bdf8, #8b5cf6);
+  }
+
+  .profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid #111827;
+    display: block;
+  }
+
+  .avatar-fallback {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 4px solid #111827;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #172033;
+    color: #e0f2fe;
+    font-size: 2.4rem;
+    font-weight: 800;
+  }
+
+  .profile-name {
+    margin: 0;
+    font-size: 1.65rem;
+    letter-spacing: 0;
+  }
+
+  .profile-username {
+    margin: 8px 0 0;
+    color: #94a3b8;
+    font-weight: 600;
+  }
+
+  .profile-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 22px;
+  }
+
+  .detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .detail-card {
+    padding: 20px;
+  }
+
+  .detail-card.wide {
+    grid-column: 1 / -1;
+  }
+
+  .detail-label {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 10px;
+    color: #94a3b8;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .detail-value {
+    margin: 0;
+    color: #f8fafc;
+    font-size: 1.04rem;
+    font-weight: 700;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+  }
+
+  .profile-note {
+    margin-top: 14px;
+    padding: 16px 18px;
+    color: #cbd5e1;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 860px) {
+    .profile-layout,
+    .detail-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="page-heading">
+  <div>
+    <h1>Profile</h1>
+    <p>Manage the personal details connected to your cash and expense dashboard.</p>
+  </div>
+</div>
+
+<section class="profile-layout">
+  <aside class="panel profile-card">
+    <div class="profile-avatar">
+      {% if request.user.user_profile.profileimage %}
+        <img src="{{ request.user.user_profile.profileimage.url }}" alt="Profile image">
+      {% else %}
+        <div class="avatar-fallback">{{ request.user.username|first|upper }}</div>
+      {% endif %}
+    </div>
+    <h2 class="profile-name">{{ request.user.user_profile.DisplayName|default:request.user.username }}</h2>
+    <p class="profile-username">@{{ request.user.username }}</p>
+    <div class="profile-actions">
+      <a href="{% url 'profileupdate' %}" class="button"><i class="fa-solid fa-user-pen"></i> Update Profile</a>
+    </div>
+  </aside>
+
+  <div>
+    <div class="detail-grid">
+      <div class="panel detail-card">
+        <div class="detail-label"><i class="fa-solid fa-phone"></i> Mobile</div>
+        <p class="detail-value">{{ request.user.user_profile.mobile|default:"Not added yet" }}</p>
+      </div>
+
+      <div class="panel detail-card">
+        <div class="detail-label"><i class="fa-solid fa-briefcase"></i> Occupation</div>
+        <p class="detail-value">{{ request.user.user_profile.Occupation|default:"Not added yet" }}</p>
+      </div>
+
+      <div class="panel detail-card wide">
+        <div class="detail-label"><i class="fa-solid fa-location-dot"></i> Address</div>
+        <p class="detail-value">{{ request.user.user_profile.Address|default:"Not added yet" }}</p>
+      </div>
+    </div>
+
+    <div class="panel profile-note">
+      A complete profile gives the project a more polished, portfolio-ready feel and keeps the account area consistent with the dashboard design.
+    </div>
+  </div>
+</section>
+{% endblock body %}

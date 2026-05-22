@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<style>
+  .app-shell {
+    width: min(1500px, calc(100% - 32px));
+  }
+
+  .ledger-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+    align-items: start;
+    margin-top: 22px;
+  }
+
+  .ledger-section {
+    overflow: hidden;
+  }
+
+  .section-head {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .section-head h2 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.18rem;
+  }
+
+  .section-head .btn {
+    white-space: nowrap;
+  }
+
+  .month-row td {
+    background: rgba(56, 189, 248, 0.1) !important;
+    color: #bae6fd;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .ledger-section .data-table {
+    min-width: 680px;
+  }
+
+  .ledger-section .data-table th:last-child,
+  .ledger-section .data-table td:last-child {
+    width: 172px;
+  }
+
+  .ledger-section .action-row {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ledger-section .action-row .btn {
+    min-height: 34px;
+    padding: 7px 10px;
+    font-size: 0.82rem;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 1180px) {
+    .ledger-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 680px) {
+    .section-head {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+</style>
+
+<div class="page-heading">
+  <div>
+    <h1>Cash & Expense Records</h1>
+    <p>Cash records stay on the left and expense records stay on the right. Each side continues downward month by month.</p>
+  </div>
+</div>
+
+<div class="ledger-grid">
+  <section id="cash-records" class="panel ledger-section">
+    <div class="section-head">
+      <h2><i class="fa-solid fa-sack-dollar" style="color: #86efac;"></i> Cash Page</h2>
+      <a href="{% url 'AddCash' %}" class="btn"><i class="fa-solid fa-circle-plus"></i> Add Cash</a>
+    </div>
+
+    {% if CashData %}
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Source</th>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Description</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for i in CashData|dictsortreversed:"datetime" %}
+              {% ifchanged i.datetime|date:"F Y" %}
+                <tr class="month-row">
+                  <td colspan="6">{{ i.datetime|date:"F Y" }}</td>
+                </tr>
+              {% endifchanged %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ i.source|default:"Cash source" }}</td>
+                <td>{{ i.datetime|date:"M d, Y" }}</td>
+                <td class="amount-cash">+${{ i.amount|floatformat:2 }}</td>
+                <td>{{ i.description|default:"-"|truncatechars:30 }}</td>
+                <td>
+                  <div class="action-row">
+                    <a href="{% url 'CashEdit' i.id %}" class="btn btn-secondary"><i class="fa-solid fa-pen"></i> Edit</a>
+                    <a href="{% url 'CashDelete' i.id %}" class="btn btn-danger" onclick="return confirm('Delete this cash record?');"><i class="fa-solid fa-trash"></i> Delete</a>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="empty-state">No cash records found.</div>
+    {% endif %}
+  </section>
+
+  <section id="expense-records" class="panel ledger-section">
+    <div class="section-head">
+      <h2><i class="fa-solid fa-receipt" style="color: #fdba74;"></i> Expense Page</h2>
+      <a href="{% url 'AddExpense' %}" class="btn"><i class="fa-solid fa-circle-plus"></i> Add Expense</a>
+    </div>
+
+    {% if ExpenseData %}
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Description</th>
+              <th>Amount</th>
+              <th>Date</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for i in ExpenseData|dictsortreversed:"datetime" %}
+              {% ifchanged i.datetime|date:"F Y" %}
+                <tr class="month-row">
+                  <td colspan="5">{{ i.datetime|date:"F Y" }}</td>
+                </tr>
+              {% endifchanged %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ i.description|default:"Expense"|truncatechars:34 }}</td>
+                <td class="amount-expense">-${{ i.amount|floatformat:2 }}</td>
+                <td>{{ i.datetime|date:"M d, Y" }}</td>
+                <td>
+                  <div class="action-row">
+                    <a href="{% url 'ExpenseEdit' i.id %}" class="btn btn-secondary"><i class="fa-solid fa-pen"></i> Edit</a>
+                    <a href="{% url 'ExpenseDelete' i.id %}" class="btn btn-danger" onclick="return confirm('Delete this expense record?');"><i class="fa-solid fa-trash"></i> Delete</a>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="empty-state">No expense records found.</div>
+    {% endif %}
+  </section>
+</div>
+{% endblock body %}
